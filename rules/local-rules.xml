@@ -1,0 +1,55 @@
+<group name="misp,threat_intel,">
+
+  <!-- 🔹 Base Rule: All MISP Events -->
+  <rule id="100620" level="10">
+    <field name="integration">misp</field>
+    <description>MISP: Event received from integration</description>
+    <options>no_full_log</options>
+  </rule>
+
+  <!-- ❌ Error Handling -->
+  <rule id="100621" level="6">
+    <if_sid>100620</if_sid>
+    <field name="misp.error">.+</field>
+    <description>❌ MISP Error: $(misp.error)</description>
+    <group>misp_error,</group>
+    <options>no_full_log</options>
+  </rule>
+
+  <!-- 🚨 Malicious IP -->
+  <rule id="100622" level="15">
+    <if_sid>100620</if_sid>
+    <field name="misp.type">ip-dst|ip-src|ip</field>
+    <description>🚨 MISP: Malicious IP detected - $(misp.value)</description>
+    <group>misp_alert,ip,critical</group>
+    <options>no_full_log</options>
+  </rule>
+
+  <!-- 🌐 Malicious Domain -->
+  <rule id="100623" level="15">
+    <if_sid>100620</if_sid>
+    <field name="misp.type">domain|hostname|fqdn</field>
+    <description>🚨 MISP: Malicious Domain detected - $(misp.value)</description>
+    <group>misp_alert,domain,critical</group>
+    <options>no_full_log</options>
+  </rule>
+
+  <!-- 🧬 Malicious Hash -->
+  <rule id="100624" level="15">
+    <if_sid>100620</if_sid>
+    <field name="misp.type">md5|sha1|sha256</field>
+    <description>🚨 MISP: Malicious File Hash detected - $(misp.value)</description>
+    <group>misp_alert,hash,critical</group>
+    <options>no_full_log</options>
+  </rule>
+
+  <!-- ⚠️ Generic IOC Match -->
+  <rule id="100625" level="12">
+    <if_sid>100620</if_sid>
+    <field name="misp.category">.+</field>
+    <description>⚠️ MISP: IOC Match Found - $(misp.category): $(misp.value)</description>
+    <group>misp_alert,general</group>
+    <options>no_full_log</options>
+  </rule>
+
+</group>
