@@ -69,24 +69,33 @@ wazuh-misp-integration/
 
 ## 🚀 Setup Guide
 
-### 1️⃣ Configure MISP
+### 📥 1️⃣ Clone the Repository
 
-* Login to MISP
-* Navigate to: **Automation → API Keys**
-* Generate an API key
-* Enable threat intelligence feeds
+```bash
+git clone https://github.com/jaygohelceh/wazuh-misp-integration.git
+cd wazuh-misp-integration
+```
 
 ---
 
-### 2️⃣ Configure Wazuh Integration
+### 🧠 2️⃣ Configure MISP
 
-Edit:
+* Log in to your MISP instance
+* Navigate to: **Automation → API Keys**
+* Generate a new API key (read-only recommended)
+* Enable and update threat intelligence feeds
 
-```
+---
+
+### ⚙️ 3️⃣ Configure Wazuh Integration
+
+Edit the Wazuh configuration file:
+
+```bash
 /var/ossec/etc/ossec.conf
 ```
 
-Add:
+Add the following integration block:
 
 ```xml
 <integration>
@@ -96,7 +105,7 @@ Add:
 </integration>
 ```
 
-Restart Wazuh:
+Restart Wazuh Manager:
 
 ```bash
 systemctl restart wazuh-manager
@@ -104,7 +113,9 @@ systemctl restart wazuh-manager
 
 ---
 
-### 3️⃣ Add Integration Script
+### 🐍 4️⃣ Add Integration Script
+
+Copy the Python integration script to the Wazuh integrations directory:
 
 ```bash
 cp custom-misp.py /var/ossec/integrations/
@@ -112,6 +123,28 @@ chmod +x /var/ossec/integrations/custom-misp.py
 ```
 
 ---
+
+### 📜 5️⃣ Add Custom Rules
+
+```bash
+cp rules/local_rules.xml /var/ossec/etc/rules/
+systemctl restart wazuh-manager
+```
+
+---
+
+### 🧪 6️⃣ Verify Integration
+
+Check Wazuh logs to confirm the integration is running:
+
+```bash
+tail -f /var/ossec/logs/ossec.log
+```
+
+You should see entries related to **custom-misp integration execution**.
+
+---
+
 
 ### 4️⃣ Add Custom Rules
 
@@ -180,7 +213,6 @@ curl http://example.com
 * Malware investigation support
 
 ---
-
 
 ## 📚 Learning Outcomes
 
